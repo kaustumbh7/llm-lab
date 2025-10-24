@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
-import type { CreateExperimentDto } from './dto/create-experiment.dto';
+import { CreateExperimentDto } from './dto/create-experiment.dto';
 import { ExperimentsService } from './experiments.service';
 
 @Controller('experiments')
