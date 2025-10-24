@@ -69,7 +69,15 @@ export class ExperimentsService {
     });
 
     this.logger.log(`Created experiment: ${experiment.id}`);
-    return experiment;
+
+    // Automatically run the experiment after creating it
+    const runResult = await this.runExperiment(experiment);
+
+    return {
+      experiment: runResult.experiment,
+      responsesGenerated: runResult.responsesGenerated,
+      parameterCombinations: runResult.parameterCombinations,
+    };
   }
 
   async getExperiments() {
@@ -90,12 +98,7 @@ export class ExperimentsService {
     });
   }
 
-  async runExperiment(experimentId: string) {
-    const experiment = await this.getExperiment(experimentId);
-    if (!experiment) {
-      throw new Error('Experiment not found');
-    }
-
+  private async runExperiment(experiment: Experiment) {
     const parameterCombinations =
       this.generateParameterCombinations(experiment);
 

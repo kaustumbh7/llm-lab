@@ -23,11 +23,6 @@ export class ExperimentsController {
     return this.experimentsService.getExperiment(id);
   }
 
-  @Post(':id/run')
-  run(@Param('id') id: string) {
-    return this.experimentsService.runExperiment(id);
-  }
-
   @Get(':id/export')
   async exportExperiment(@Param('id') id: string, @Res() res: Response) {
     const exportData = await this.experimentsService.exportExperiment(id);
