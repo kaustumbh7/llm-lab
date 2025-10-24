@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Experiment } from '@prisma/client';
+import { Experiment, Response } from '@prisma/client';
 
 import { LLMParameters, LlmService } from '../llm/llm.service';
 import { MetricsService } from '../metrics/metrics.service';
@@ -103,7 +103,7 @@ export class ExperimentsService {
       `Running experiment with ${parameterCombinations.length} parameter combinations`,
     );
 
-    const savedResponses: any[] = [];
+    const savedResponses: Response[] = [];
     for (const params of parameterCombinations) {
       const response = await this.llmService.generateResponse(
         experiment.prompt,
