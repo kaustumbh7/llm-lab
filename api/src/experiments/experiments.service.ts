@@ -123,7 +123,7 @@ export class ExperimentsService {
 
       // Calculate metrics for the response
       try {
-        await this.metricsService.calculateMetrics(savedResponse.id);
+        await this.metricsService.calculateMetrics(savedResponse, experiment);
         this.logger.log(`Calculated metrics for response ${savedResponse.id}`);
       } catch (error) {
         this.logger.error(

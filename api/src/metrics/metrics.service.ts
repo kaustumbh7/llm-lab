@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Experiment, Response } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { DEFAULT_METRIC_WEIGHTS, MetricsResult } from './types/metric-types';
@@ -15,18 +16,12 @@ export class MetricsService {
 
   constructor(private prisma: PrismaService) {}
 
-  async calculateMetrics(responseId: string): Promise<MetricsResult> {
-    const response = await this.prisma.response.findUnique({
-      where: { id: responseId },
-      include: { experiment: true },
-    });
-
-    if (!response) {
-      throw new Error('Response not found');
-    }
-
+  async calculateMetrics(
+    response: Response,
+    experiment: Experiment,
+  ): Promise<MetricsResult> {
     const content = response.content;
-    const prompt = response.experiment.prompt;
+    const prompt = experiment.prompt;
 
     // Calculate all metrics using utility classes
     const coherenceScore = CoherenceUtil.calculateCoherenceScore(content);
@@ -62,15 +57,15 @@ export class MetricsService {
 
     // Save metrics to database
     await this.prisma.responseMetrics.upsert({
-      where: { responseId },
+      where: { responseId: response.id },
       update: result,
       create: {
-        responseId,
+        responseId: response.id,
         ...result,
       },
     });
 
-    this.logger.log(`Calculated metrics for response ${responseId}`);
+    this.logger.log(`Calculated metrics for response ${response.id}`);
     return result;
   }
 

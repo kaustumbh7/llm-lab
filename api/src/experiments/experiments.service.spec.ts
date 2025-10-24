@@ -2,6 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { LlmService } from '../llm/llm.service';
+import { MetricsService } from '../metrics/metrics.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { ExperimentsService } from './experiments.service';
 
@@ -48,6 +49,12 @@ describe('ExperimentsService', () => {
                 };
                 return config[key] ?? defaultValue;
               }),
+          },
+        },
+        {
+          provide: MetricsService,
+          useValue: {
+            calculateMetrics: jest.fn(),
           },
         },
       ],
