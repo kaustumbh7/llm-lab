@@ -186,4 +186,13 @@ export class ExperimentsService {
 
     return combinations;
   }
+
+  async exportExperiment(experimentId: string) {
+    const experiment = await this.getExperiment(experimentId);
+    if (!experiment) {
+      throw new Error('Experiment not found');
+    }
+
+    return experiment;
+  }
 }

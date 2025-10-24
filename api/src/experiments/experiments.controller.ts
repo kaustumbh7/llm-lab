@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import type { Response } from 'express';
 
 import { CreateExperimentDto } from './dto/create-experiment.dto';
 import { ExperimentsService } from './experiments.service';
@@ -25,5 +26,17 @@ export class ExperimentsController {
   @Post(':id/run')
   run(@Param('id') id: string) {
     return this.experimentsService.runExperiment(id);
+  }
+
+  @Get(':id/export')
+  async exportExperiment(@Param('id') id: string, @Res() res: Response) {
+    const exportData = await this.experimentsService.exportExperiment(id);
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="experiment-${id}.json"`,
+    );
+    res.json(exportData);
   }
 }
