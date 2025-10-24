@@ -83,19 +83,32 @@ export class ExperimentsService {
   async getExperiments() {
     return this.prisma.experiment.findMany({
       orderBy: { createdAt: 'desc' },
-      include: {
-        responses: true,
-      },
     });
   }
 
   async getExperiment(id: string) {
     return this.prisma.experiment.findUnique({
       where: { id },
+    });
+  }
+
+  async exportExperiment(experimentId: string) {
+    const experiment = await this.prisma.experiment.findUnique({
+      where: { id: experimentId },
       include: {
-        responses: true,
+        responses: {
+          include: {
+            metrics: true,
+          },
+        },
       },
     });
+
+    if (!experiment) {
+      throw new Error('Experiment not found');
+    }
+
+    return experiment;
   }
 
   private async runExperiment(experiment: Experiment) {
@@ -188,14 +201,5 @@ export class ExperimentsService {
     }
 
     return combinations;
-  }
-
-  async exportExperiment(experimentId: string) {
-    const experiment = await this.getExperiment(experimentId);
-    if (!experiment) {
-      throw new Error('Experiment not found');
-    }
-
-    return experiment;
   }
 }
