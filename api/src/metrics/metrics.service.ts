@@ -2,7 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Experiment, Response } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { DEFAULT_METRIC_WEIGHTS, MetricsResult } from './types/metric-types';
+import { DEFAULT_METRIC_WEIGHTS } from './constants/metric-constants';
+import { MetricsResult } from './types/metric-types';
 import { CoherenceUtil } from './utils/coherence.util';
 import { CompletenessUtil } from './utils/completeness.util';
 import { LengthUtil } from './utils/length.util';

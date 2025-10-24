@@ -29,11 +29,3 @@ export interface MetricWeights {
   structure: number;
   vocabulary: number;
 }
-
-export const DEFAULT_METRIC_WEIGHTS: MetricWeights = {
-  coherence: 0.2,
-  completeness: 0.3,
-  length: 0.2,
-  structure: 0.15,
-  vocabulary: 0.15,
-};
