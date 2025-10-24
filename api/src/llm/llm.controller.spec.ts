@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { LlmController } from './llm.controller';
+import { LlmService } from './llm.service';
 
 describe('LlmController', () => {
   let controller: LlmController;
@@ -7,6 +9,14 @@ describe('LlmController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LlmController],
+      providers: [
+        {
+          provide: LlmService,
+          useValue: {
+            generateResponse: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<LlmController>(LlmController);
