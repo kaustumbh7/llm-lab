@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Experiment } from '@prisma/client';
 
 import { LLMParameters, LlmService } from '../llm/llm.service';
+import { MetricsService } from '../metrics/metrics.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateExperimentDto } from './dto/create-experiment.dto';
 
@@ -14,6 +15,7 @@ export class ExperimentsService {
     private prisma: PrismaService,
     private llmService: LlmService,
     private configService: ConfigService,
+    private metricsService: MetricsService,
   ) {}
 
   async createExperiment(dto: CreateExperimentDto) {
@@ -118,6 +120,17 @@ export class ExperimentsService {
           content: response.content,
         },
       });
+
+      // Calculate metrics for the response
+      try {
+        await this.metricsService.calculateMetrics(savedResponse.id);
+        this.logger.log(`Calculated metrics for response ${savedResponse.id}`);
+      } catch (error) {
+        this.logger.error(
+          `Failed to calculate metrics for response ${savedResponse.id}:`,
+          error,
+        );
+      }
 
       savedResponses.push(savedResponse);
     }
