@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Experiment } from '@prisma/client';
 
 import { LLMParameters, LlmService } from '../llm/llm.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateExperimentDto } from './dto/create-experiment.dto';
-import { ExperimentParameters } from './types/experiment-parameters.type';
 
 @Injectable()
 export class ExperimentsService {
@@ -125,7 +125,7 @@ export class ExperimentsService {
   }
 
   private generateParameterCombinations(
-    experiment: ExperimentParameters,
+    experiment: Experiment,
   ): LLMParameters[] {
     const combinations: LLMParameters[] = [];
 
