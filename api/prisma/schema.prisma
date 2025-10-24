@@ -47,7 +47,7 @@ model Experiment {
   maxTokensStep Int @default(100)
 
   // LLM configuration
-  model String @default("gemini-1.5-flash")
+  model String @default("gemini-2.5-flash")
 
   // Relationships
   responses Response[]

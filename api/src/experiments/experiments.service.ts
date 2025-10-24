@@ -9,12 +9,33 @@ import { ExperimentParameters } from './types/experiment-parameters.type';
 export class ExperimentsService {
   private readonly logger = new Logger(ExperimentsService.name);
 
+  // Constants for parameter combinations (3^4 = 81 total combinations)
+  private readonly TEMPERATURE_COMBINATIONS = 3;
+  private readonly TOP_P_COMBINATIONS = 3;
+  private readonly TOP_K_COMBINATIONS = 3;
+  private readonly MAX_TOKENS_COMBINATIONS = 3;
+
+  // Default LLM model
+  private readonly DEFAULT_MODEL = 'gemini-2.5-flash';
+
   constructor(
     private prisma: PrismaService,
     private llmService: LlmService,
   ) {}
 
   async createExperiment(dto: CreateExperimentDto) {
+    // Calculate steps dynamically based on our constants
+    const temperatureStep =
+      (dto.temperatureMax - dto.temperatureMin) /
+      (this.TEMPERATURE_COMBINATIONS - 1);
+    const topPStep =
+      (dto.topPMax - dto.topPMin) / (this.TOP_P_COMBINATIONS - 1);
+    const topKStep =
+      (dto.topKMax - dto.topKMin) / (this.TOP_K_COMBINATIONS - 1);
+    const maxTokensStep =
+      (dto.maxTokensMax - dto.maxTokensMin) /
+      (this.MAX_TOKENS_COMBINATIONS - 1);
+
     const experiment = await this.prisma.experiment.create({
       data: {
         name: dto.name,
@@ -22,17 +43,17 @@ export class ExperimentsService {
         prompt: dto.prompt,
         temperatureMin: dto.temperatureMin,
         temperatureMax: dto.temperatureMax,
-        temperatureStep: dto.temperatureStep || 0.1,
+        temperatureStep: temperatureStep,
         topPMin: dto.topPMin,
         topPMax: dto.topPMax,
-        topPStep: dto.topPStep || 0.1,
+        topPStep: topPStep,
         topKMin: dto.topKMin,
         topKMax: dto.topKMax,
-        topKStep: dto.topKStep || 5,
+        topKStep: topKStep,
         maxTokensMin: dto.maxTokensMin,
         maxTokensMax: dto.maxTokensMax,
-        maxTokensStep: dto.maxTokensStep || 100,
-        model: dto.model || 'gemini-2.5-flash',
+        maxTokensStep: maxTokensStep,
+        model: dto.model || this.DEFAULT_MODEL,
       },
     });
 
@@ -58,63 +79,7 @@ export class ExperimentsService {
     });
   }
 
-  generateParameterCombinations(
-    experiment: ExperimentParameters,
-  ): LLMParameters[] {
-    const combinations: LLMParameters[] = [];
-
-    const temperatureSteps = Math.ceil(
-      (experiment.temperatureMax - experiment.temperatureMin) /
-        experiment.temperatureStep,
-    );
-    const topPSteps = Math.ceil(
-      (experiment.topPMax - experiment.topPMin) / experiment.topPStep,
-    );
-    const topKSteps = Math.ceil(
-      (experiment.topKMax - experiment.topKMin) / experiment.topKStep,
-    );
-    const maxTokensSteps = Math.ceil(
-      (experiment.maxTokensMax - experiment.maxTokensMin) /
-        experiment.maxTokensStep,
-    );
-
-    for (let t = 0; t <= temperatureSteps; t++) {
-      for (let p = 0; p <= topPSteps; p++) {
-        for (let k = 0; k <= topKSteps; k++) {
-          for (let m = 0; m <= maxTokensSteps; m++) {
-            const temperature = Math.min(
-              experiment.temperatureMin + t * experiment.temperatureStep,
-              experiment.temperatureMax,
-            );
-            const topP = Math.min(
-              experiment.topPMin + p * experiment.topPStep,
-              experiment.topPMax,
-            );
-            const topK = Math.min(
-              experiment.topKMin + k * experiment.topKStep,
-              experiment.topKMax,
-            );
-            const maxTokens = Math.min(
-              experiment.maxTokensMin + m * experiment.maxTokensStep,
-              experiment.maxTokensMax,
-            );
-
-            combinations.push({
-              temperature: Math.round(temperature * 100) / 100,
-              topP: Math.round(topP * 100) / 100,
-              topK: Math.round(topK),
-              maxTokens: Math.round(maxTokens),
-              model: experiment.model,
-            });
-          }
-        }
-      }
-    }
-
-    return combinations;
-  }
-
-  async runExperiment(experimentId: string, maxResponses: number = 20) {
+  async runExperiment(experimentId: string) {
     const experiment = await this.getExperiment(experimentId);
     if (!experiment) {
       throw new Error('Experiment not found');
@@ -122,14 +87,13 @@ export class ExperimentsService {
 
     const parameterCombinations =
       this.generateParameterCombinations(experiment);
-    const limitedCombinations = parameterCombinations.slice(0, maxResponses);
 
     this.logger.log(
-      `Running experiment with ${limitedCombinations.length} parameter combinations`,
+      `Running experiment with ${parameterCombinations.length} parameter combinations`,
     );
 
     const savedResponses: any[] = [];
-    for (const params of limitedCombinations) {
+    for (const params of parameterCombinations) {
       const response = await this.llmService.generateResponse(
         experiment.prompt,
         params,
@@ -156,7 +120,48 @@ export class ExperimentsService {
     return {
       experiment,
       responsesGenerated: savedResponses.length,
-      parameterCombinations: limitedCombinations.length,
+      parameterCombinations: parameterCombinations.length,
     };
+  }
+
+  private generateParameterCombinations(
+    experiment: ExperimentParameters,
+  ): LLMParameters[] {
+    const combinations: LLMParameters[] = [];
+
+    // Generate combinations using for loops from min to max with steps
+    for (
+      let temperature = experiment.temperatureMin;
+      temperature <= experiment.temperatureMax;
+      temperature += experiment.temperatureStep
+    ) {
+      for (
+        let topP = experiment.topPMin;
+        topP <= experiment.topPMax;
+        topP += experiment.topPStep
+      ) {
+        for (
+          let topK = experiment.topKMin;
+          topK <= experiment.topKMax;
+          topK += experiment.topKStep
+        ) {
+          for (
+            let maxTokens = experiment.maxTokensMin;
+            maxTokens <= experiment.maxTokensMax;
+            maxTokens += experiment.maxTokensStep
+          ) {
+            combinations.push({
+              temperature: Math.round(temperature * 100) / 100,
+              topP: Math.round(topP * 100) / 100,
+              topK: Math.round(topK),
+              maxTokens: Math.round(maxTokens),
+              model: experiment.model,
+            });
+          }
+        }
+      }
+    }
+
+    return combinations;
   }
 }

@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 import type { CreateExperimentDto } from './dto/create-experiment.dto';
-import type { RunExperimentDto } from './dto/run-experiment.dto';
 import { ExperimentsService } from './experiments.service';
 
 @Controller('experiments')
@@ -24,10 +23,7 @@ export class ExperimentsController {
   }
 
   @Post(':id/run')
-  run(@Param('id') id: string, @Body() runExperimentDto: RunExperimentDto) {
-    return this.experimentsService.runExperiment(
-      id,
-      runExperimentDto.maxResponses || 20,
-    );
+  run(@Param('id') id: string) {
+    return this.experimentsService.runExperiment(id);
   }
 }
