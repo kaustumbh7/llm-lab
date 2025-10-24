@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Experiment } from '@prisma/client';
 
 import { LLMParameters, LlmService } from '../llm/llm.service';
@@ -9,32 +10,38 @@ import { CreateExperimentDto } from './dto/create-experiment.dto';
 export class ExperimentsService {
   private readonly logger = new Logger(ExperimentsService.name);
 
-  // Constants for parameter combinations (3^4 = 81 total combinations)
-  private readonly TEMPERATURE_COMBINATIONS = 3;
-  private readonly TOP_P_COMBINATIONS = 3;
-  private readonly TOP_K_COMBINATIONS = 3;
-  private readonly MAX_TOKENS_COMBINATIONS = 3;
-
-  // Default LLM model
-  private readonly DEFAULT_MODEL = 'gemini-2.5-flash';
-
   constructor(
     private prisma: PrismaService,
     private llmService: LlmService,
+    private configService: ConfigService,
   ) {}
 
   async createExperiment(dto: CreateExperimentDto) {
+    // Get constants from environment variables
+    const temperatureCombinations = this.configService.get<number>(
+      'TEMPERATURE_COMBINATIONS',
+      2,
+    );
+    const topPCombinations = this.configService.get<number>(
+      'TOP_P_COMBINATIONS',
+      2,
+    );
+    const topKCombinations = this.configService.get<number>(
+      'TOP_K_COMBINATIONS',
+      2,
+    );
+    const maxTokensCombinations = this.configService.get<number>(
+      'MAX_TOKENS_COMBINATIONS',
+      2,
+    );
+
     // Calculate steps dynamically based on our constants
     const temperatureStep =
-      (dto.temperatureMax - dto.temperatureMin) /
-      (this.TEMPERATURE_COMBINATIONS - 1);
-    const topPStep =
-      (dto.topPMax - dto.topPMin) / (this.TOP_P_COMBINATIONS - 1);
-    const topKStep =
-      (dto.topKMax - dto.topKMin) / (this.TOP_K_COMBINATIONS - 1);
+      (dto.temperatureMax - dto.temperatureMin) / (temperatureCombinations - 1);
+    const topPStep = (dto.topPMax - dto.topPMin) / (topPCombinations - 1);
+    const topKStep = (dto.topKMax - dto.topKMin) / (topKCombinations - 1);
     const maxTokensStep =
-      (dto.maxTokensMax - dto.maxTokensMin) /
-      (this.MAX_TOKENS_COMBINATIONS - 1);
+      (dto.maxTokensMax - dto.maxTokensMin) / (maxTokensCombinations - 1);
 
     const experiment = await this.prisma.experiment.create({
       data: {
@@ -53,7 +60,9 @@ export class ExperimentsService {
         maxTokensMin: dto.maxTokensMin,
         maxTokensMax: dto.maxTokensMax,
         maxTokensStep: maxTokensStep,
-        model: dto.model || this.DEFAULT_MODEL,
+        model:
+          dto.model ||
+          this.configService.get<string>('DEFAULT_MODEL', 'gemini-2.5-flash'),
       },
     });
 

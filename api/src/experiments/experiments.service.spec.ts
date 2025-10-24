@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { LlmService } from '../llm/llm.service';
@@ -28,6 +29,25 @@ describe('ExperimentsService', () => {
           provide: LlmService,
           useValue: {
             generateResponse: jest.fn(),
+          },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest
+              .fn()
+              .mockImplementation((key: string, defaultValue?: any): any => {
+                const config: Record<string, any> = {
+                  TEMPERATURE_COMBINATIONS: 2,
+                  TOP_P_COMBINATIONS: 2,
+                  TOP_K_COMBINATIONS: 2,
+                  MAX_TOKENS_COMBINATIONS: 2,
+                  MAX_CONCURRENT_REQUESTS: 3,
+                  REQUEST_DELAY_MS: 2000,
+                  DEFAULT_MODEL: 'gemini-2.5-flash',
+                };
+                return config[key] ?? defaultValue;
+              }),
           },
         },
       ],
