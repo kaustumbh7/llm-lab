@@ -159,12 +159,13 @@ export default function CreateExperimentPage() {
             {/* Basic Information */}
             <Card>
               <CardHeader>
-                <CardTitle>Basic Information</CardTitle>
+                <CardTitle>Experiment Details</CardTitle>
                 <CardDescription>
-                  Provide a name, description, and prompt for your experiment
+                  Provide the basic information and prompt for your LLM
+                  experiment
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
                 <FormField
                   control={form.control}
                   name="name"
@@ -233,224 +234,286 @@ export default function CreateExperimentPage() {
               <CardHeader>
                 <CardTitle>Parameter Ranges</CardTitle>
                 <CardDescription>
-                  Set the ranges for each parameter. The system will generate
-                  combinations within these ranges.
+                  Configure the parameter ranges for your experiment. The system
+                  will automatically generate combinations within these ranges
+                  and test each one to find the optimal settings.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Temperature */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-semibold">Temperature</h4>
-                    <Badge variant="outline">Controls randomness</Badge>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {/* Temperature */}
+                  <div className="rounded-lg border bg-blue-50/50 p-4">
+                    <div className="mb-4">
+                      <div className="mb-2 flex items-center gap-2">
+                        <h4 className="text-lg font-semibold text-blue-900">
+                          Temperature
+                        </h4>
+                        <Badge
+                          variant="secondary"
+                          className="bg-blue-100 text-blue-800"
+                        >
+                          Controls randomness
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-blue-700">
+                        Controls the randomness of the output. Lower values
+                        (0.1-0.3) produce more focused, deterministic responses.
+                        Higher values (0.7-1.0) produce more creative, diverse
+                        responses.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="temperatureMin"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Min Temperature</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.1"
+                                min="0"
+                                max="2"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseFloat(e.target.value))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="temperatureMax"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Max Temperature</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.1"
+                                min="0"
+                                max="2"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseFloat(e.target.value))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="temperatureMin"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Min Temperature</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="0.1"
-                              min="0"
-                              max="2"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(parseFloat(e.target.value))
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="temperatureMax"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Max Temperature</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="0.1"
-                              min="0"
-                              max="2"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(parseFloat(e.target.value))
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
 
-                {/* Top-P */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-semibold">Top-P</h4>
-                    <Badge variant="outline">Controls diversity</Badge>
+                  {/* Top-P */}
+                  <div className="rounded-lg border bg-green-50/50 p-4">
+                    <div className="mb-4">
+                      <div className="mb-2 flex items-center gap-2">
+                        <h4 className="text-lg font-semibold text-green-900">
+                          Top-P (Nucleus Sampling)
+                        </h4>
+                        <Badge
+                          variant="secondary"
+                          className="bg-green-100 text-green-800"
+                        >
+                          Controls diversity
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-green-700">
+                        Controls the diversity of token selection. Lower values
+                        (0.1-0.3) focus on high-probability tokens, while higher
+                        values (0.7-0.9) allow more diverse token selection.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="topPMin"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Min Top-P</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.1"
+                                min="0"
+                                max="1"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseFloat(e.target.value))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="topPMax"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Max Top-P</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.1"
+                                min="0"
+                                max="1"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseFloat(e.target.value))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="topPMin"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Min Top-P</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="0.1"
-                              min="0"
-                              max="1"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(parseFloat(e.target.value))
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="topPMax"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Max Top-P</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="0.1"
-                              min="0"
-                              max="1"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(parseFloat(e.target.value))
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
 
-                {/* Top-K */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-semibold">Top-K</h4>
-                    <Badge variant="outline">Controls vocabulary</Badge>
+                  {/* Top-K */}
+                  <div className="rounded-lg border bg-purple-50/50 p-4">
+                    <div className="mb-4">
+                      <div className="mb-2 flex items-center gap-2">
+                        <h4 className="text-lg font-semibold text-purple-900">
+                          Top-K
+                        </h4>
+                        <Badge
+                          variant="secondary"
+                          className="bg-purple-100 text-purple-800"
+                        >
+                          Controls vocabulary
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-purple-700">
+                        Limits the number of highest-probability tokens to
+                        consider. Lower values (10-20) focus on the most likely
+                        tokens, while higher values (40-50) allow more
+                        vocabulary diversity.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="topKMin"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Min Top-K</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="1"
+                                min="1"
+                                max="100"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="topKMax"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Max Top-K</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="1"
+                                min="1"
+                                max="100"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="topKMin"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Min Top-K</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="1"
-                              min="1"
-                              max="100"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(parseInt(e.target.value))
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="topKMax"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Max Top-K</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="1"
-                              min="1"
-                              max="100"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(parseInt(e.target.value))
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
 
-                {/* Max Tokens */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-semibold">Max Tokens</h4>
-                    <Badge variant="outline">Controls length</Badge>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="maxTokensMin"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Min Max Tokens</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="1"
-                              min="1"
-                              max="1000"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(parseInt(e.target.value))
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="maxTokensMax"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Max Max Tokens</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="1"
-                              min="1"
-                              max="1000"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(parseInt(e.target.value))
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  {/* Max Tokens */}
+                  <div className="rounded-lg border bg-orange-50/50 p-4">
+                    <div className="mb-4">
+                      <div className="mb-2 flex items-center gap-2">
+                        <h4 className="text-lg font-semibold text-orange-900">
+                          Max Tokens
+                        </h4>
+                        <Badge
+                          variant="secondary"
+                          className="bg-orange-100 text-orange-800"
+                        >
+                          Controls length
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-orange-700">
+                        Sets the maximum length of the generated response. Lower
+                        values (10-50) produce concise answers, while higher
+                        values (100-500) allow for more detailed, comprehensive
+                        responses.
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="maxTokensMin"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Min Max Tokens</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="1"
+                                min="1"
+                                max="1000"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="maxTokensMax"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Max Max Tokens</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="1"
+                                min="1"
+                                max="1000"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 </div>
               </CardContent>

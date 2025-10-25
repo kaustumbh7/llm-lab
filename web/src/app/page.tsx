@@ -46,9 +46,9 @@ export default async function HomePage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {experiments.length === 0 ? (
-            <Card>
+            <Card className="md:col-span-2 lg:col-span-3">
               <CardContent className="pt-6">
                 <p className="text-muted-foreground">
                   No experiments yet. Create your first experiment!
@@ -57,22 +57,37 @@ export default async function HomePage() {
             </Card>
           ) : (
             experiments.map((experiment) => (
-              <Card key={experiment.id}>
-                <CardHeader>
-                  <CardTitle>{experiment.name}</CardTitle>
-                  <CardDescription>
+              <Card
+                key={experiment.id}
+                className="transition-shadow hover:shadow-md"
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="line-clamp-1 text-lg">
+                    {experiment.name}
+                  </CardTitle>
+                  <CardDescription className="line-clamp-2">
                     {experiment.description || 'No description'}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="text-muted-foreground text-sm">
-                    <p>Model: {experiment.model}</p>
-                    <p>
-                      Created:{' '}
-                      {new Date(experiment.createdAt).toLocaleDateString()}
-                    </p>
+                <CardContent className="pt-0">
+                  <div className="text-muted-foreground space-y-2 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span>Model:</span>
+                      <span className="font-medium">{experiment.model}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>Created:</span>
+                      <span className="font-medium">
+                        {new Date(experiment.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
-                  <Button variant="outline" size="sm" className="mt-4" asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-4 w-full"
+                    asChild
+                  >
                     <Link href={`/experiments/${experiment.id}`}>
                       View Details
                     </Link>

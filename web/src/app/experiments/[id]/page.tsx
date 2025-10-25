@@ -5,6 +5,7 @@ import { ExportButton } from '@/components/ExportButton';
 import { MetricsVisualization } from '@/components/MetricsVisualization';
 import { ParameterAnalysis } from '@/components/ParameterAnalysis';
 import { ResponseComparison } from '@/components/ResponseComparison';
+import { ResponsePagination } from '@/components/ResponsePagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,7 +16,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { getExperiment } from '@/lib/api';
-import type { ExperimentResponse, ExperimentWithResponses } from '@/lib/types';
+import type { ExperimentWithResponses } from '@/lib/types';
 
 interface ExperimentDetailPageProps {
   params: Promise<{
@@ -159,83 +160,75 @@ export default async function ExperimentDetailPage({
           </CardContent>
         </Card>
 
-        {/* Responses */}
+        {/* Responses Section */}
         <Card>
           <CardHeader>
-            <CardTitle>Responses</CardTitle>
+            <CardTitle>Generated Responses</CardTitle>
             <CardDescription>
-              Generated responses with their parameters and metrics
+              All generated responses with their parameters and quality metrics.
+              Use the pagination below to navigate through all responses.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {experiment.responses?.map((response: ExperimentResponse) => (
-                <div key={response.id} className="rounded-lg border p-4">
-                  <div className="mb-3 flex items-start justify-between">
-                    <div className="flex gap-2">
-                      <Badge variant="outline">T: {response.temperature}</Badge>
-                      <Badge variant="outline">P: {response.topP}</Badge>
-                      <Badge variant="outline">K: {response.topK}</Badge>
-                      <Badge variant="outline">
-                        Tokens: {response.maxTokens}
-                      </Badge>
-                    </div>
-                    {response.metrics && (
-                      <Badge variant="secondary">
-                        Score: {response.metrics.overallScore?.toFixed(2)}
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="bg-muted rounded p-3 text-sm">
-                    {response.content}
-                  </div>
-                  {response.metrics && (
-                    <div className="mt-3 grid grid-cols-2 gap-2 text-xs md:grid-cols-5">
-                      <div>
-                        <span className="font-medium">Coherence:</span>{' '}
-                        {response.metrics.coherenceScore?.toFixed(2)}
-                      </div>
-                      <div>
-                        <span className="font-medium">Completeness:</span>{' '}
-                        {response.metrics.completenessScore?.toFixed(2)}
-                      </div>
-                      <div>
-                        <span className="font-medium">Length:</span>{' '}
-                        {response.metrics.lengthScore?.toFixed(2)}
-                      </div>
-                      <div>
-                        <span className="font-medium">Structure:</span>{' '}
-                        {response.metrics.structureScore?.toFixed(2)}
-                      </div>
-                      <div>
-                        <span className="font-medium">Vocabulary:</span>{' '}
-                        {response.metrics.vocabularyScore?.toFixed(2)}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )) || (
-                <p className="text-muted-foreground py-8 text-center">
-                  No responses found for this experiment.
-                </p>
-              )}
-            </div>
+            {experiment.responses && experiment.responses.length > 0 ? (
+              <ResponsePagination responses={experiment.responses} />
+            ) : (
+              <p className="text-muted-foreground py-8 text-center">
+                No responses found for this experiment.
+              </p>
+            )}
           </CardContent>
         </Card>
 
-        {/* Metrics Visualization */}
+        {/* Analysis & Visualization Section */}
         {experiment.responses && experiment.responses.length > 0 && (
-          <MetricsVisualization responses={experiment.responses} />
-        )}
+          <>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold">Analysis & Visualization</h2>
+              <p className="text-muted-foreground">
+                Comprehensive analysis of your experiment results with
+                interactive charts and metrics.
+              </p>
+            </div>
 
-        {/* Parameter Analysis */}
-        {experiment.responses && experiment.responses.length > 0 && (
-          <ParameterAnalysis responses={experiment.responses} />
-        )}
+            {/* Metrics Visualization */}
+            <div className="mb-8">
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold">Performance Metrics</h3>
+                <p className="text-muted-foreground">
+                  Visualize how different parameter combinations affect response
+                  quality across all metrics.
+                </p>
+              </div>
+              <MetricsVisualization responses={experiment.responses} />
+            </div>
 
-        {/* Response Comparison */}
-        {experiment.responses && experiment.responses.length > 1 && (
-          <ResponseComparison responses={experiment.responses} />
+            {/* Parameter Analysis */}
+            <div className="mb-8">
+              <div className="mb-4">
+                <h3 className="text-xl font-semibold">Parameter Analysis</h3>
+                <p className="text-muted-foreground">
+                  Analyze parameter distributions, correlations, and identify
+                  the best performing combinations.
+                </p>
+              </div>
+              <ParameterAnalysis responses={experiment.responses} />
+            </div>
+
+            {/* Response Comparison */}
+            {experiment.responses.length > 1 && (
+              <div className="mb-8">
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold">Response Comparison</h3>
+                  <p className="text-muted-foreground">
+                    Compare different responses side-by-side to understand the
+                    impact of parameter changes.
+                  </p>
+                </div>
+                <ResponseComparison responses={experiment.responses} />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
