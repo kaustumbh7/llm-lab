@@ -2,6 +2,9 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 import { ExportButton } from '@/components/ExportButton';
+import { MetricsVisualization } from '@/components/MetricsVisualization';
+import { ParameterAnalysis } from '@/components/ParameterAnalysis';
+import { ResponseComparison } from '@/components/ResponseComparison';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -219,6 +222,21 @@ export default async function ExperimentDetailPage({
             </div>
           </CardContent>
         </Card>
+
+        {/* Metrics Visualization */}
+        {experiment.responses && experiment.responses.length > 0 && (
+          <MetricsVisualization responses={experiment.responses} />
+        )}
+
+        {/* Parameter Analysis */}
+        {experiment.responses && experiment.responses.length > 0 && (
+          <ParameterAnalysis responses={experiment.responses} />
+        )}
+
+        {/* Response Comparison */}
+        {experiment.responses && experiment.responses.length > 1 && (
+          <ResponseComparison responses={experiment.responses} />
+        )}
       </div>
     </div>
   );
