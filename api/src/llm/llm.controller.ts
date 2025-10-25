@@ -2,11 +2,11 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 
 import { LLMParameters, LlmService } from './llm.service';
 
-@Controller()
+@Controller('llm')
 export class LlmController {
   constructor(private readonly llmService: LlmService) {}
 
-  @Post('test-llm')
+  @Post('test')
   async testLLM(
     @Body() body: { prompt: string; parameters?: Partial<LLMParameters> },
   ) {
