@@ -1,18 +1,6 @@
+import type { Experiment } from './types';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
-export interface Experiment {
-  id: string;
-  name: string;
-  description?: string;
-  prompt: string;
-  createdAt: string;
-  updatedAt: string;
-  model: string;
-}
-
-export interface ExperimentsResponse {
-  experiments: Experiment[];
-}
 
 // Minimal API client - only what we need right now
 export async function getExperiments(): Promise<Experiment[]> {
@@ -25,4 +13,24 @@ export async function getExperiments(): Promise<Experiment[]> {
   const data = await response.json();
   // API returns array directly, not wrapped in { experiments: [...] }
   return Array.isArray(data) ? data : [];
+}
+
+export async function getExperiment(id: string): Promise<Experiment> {
+  const response = await fetch(`${API_BASE_URL}/experiments/${id}`);
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch experiment');
+  }
+
+  return response.json();
+}
+
+export async function exportExperiment(id: string): Promise<unknown> {
+  const response = await fetch(`${API_BASE_URL}/experiments/${id}/export`);
+
+  if (!response.ok) {
+    throw new Error('Failed to export experiment');
+  }
+
+  return response.json();
 }

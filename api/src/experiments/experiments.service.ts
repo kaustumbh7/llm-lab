@@ -90,6 +90,13 @@ export class ExperimentsService {
   async getExperiment(id: string) {
     return this.prisma.experiment.findUnique({
       where: { id },
+      include: {
+        responses: {
+          include: {
+            metrics: true,
+          },
+        },
+      },
     });
   }
 

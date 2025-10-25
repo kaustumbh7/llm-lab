@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -6,7 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { type Experiment, getExperiments } from '@/lib/api';
+import { getExperiments } from '@/lib/api';
+import type { Experiment } from '@/lib/types';
 
 export default async function HomePage() {
   let experiments: Experiment[] = [];
@@ -63,6 +66,11 @@ export default async function HomePage() {
                       {new Date(experiment.createdAt).toLocaleDateString()}
                     </p>
                   </div>
+                  <Button variant="outline" size="sm" className="mt-4" asChild>
+                    <Link href={`/experiments/${experiment.id}`}>
+                      View Details
+                    </Link>
+                  </Button>
                 </CardContent>
               </Card>
             ))
