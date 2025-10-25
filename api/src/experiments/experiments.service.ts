@@ -72,13 +72,10 @@ export class ExperimentsService {
     this.logger.log(`Created experiment: ${experiment.id}`);
 
     // Automatically run the experiment after creating it
-    const runResult = await this.runExperiment(experiment);
+    await this.runExperiment(experiment);
 
-    return {
-      experiment: runResult.experiment,
-      responsesGenerated: runResult.responsesGenerated,
-      parameterCombinations: runResult.parameterCombinations,
-    };
+    // Return the experiment directly (consistent with other endpoints)
+    return experiment;
   }
 
   async getExperiments() {

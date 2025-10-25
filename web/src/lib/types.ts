@@ -41,6 +41,20 @@ export interface ExperimentWithResponses extends Experiment {
   responses?: ExperimentResponse[];
 }
 
+export interface CreateExperimentData {
+  name: string;
+  description?: string;
+  prompt: string;
+  temperatureMin: number;
+  temperatureMax: number;
+  topPMin: number;
+  topPMax: number;
+  topKMin: number;
+  topKMax: number;
+  maxTokensMin: number;
+  maxTokensMax: number;
+}
+
 export interface ExperimentsResponse {
   experiments: Experiment[];
 }

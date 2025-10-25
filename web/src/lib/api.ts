@@ -1,4 +1,4 @@
-import type { Experiment } from './types';
+import type { CreateExperimentData, Experiment } from './types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -20,6 +20,24 @@ export async function getExperiment(id: string): Promise<Experiment> {
 
   if (!response.ok) {
     throw new Error('Failed to fetch experiment');
+  }
+
+  return response.json();
+}
+
+export async function createExperiment(
+  data: CreateExperimentData,
+): Promise<Experiment> {
+  const response = await fetch(`${API_BASE_URL}/experiments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create experiment');
   }
 
   return response.json();

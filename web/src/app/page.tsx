@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -30,7 +31,12 @@ export default async function HomePage() {
             Manage and analyze your LLM experiments
           </p>
         </div>
-        <Button>Create Experiment</Button>
+        <Button asChild>
+          <Link href="/experiments/new">
+            <Plus className="mr-2 h-4 w-4" />
+            Create Experiment
+          </Link>
+        </Button>
       </div>
 
       {error ? (
