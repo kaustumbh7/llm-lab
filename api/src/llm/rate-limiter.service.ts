@@ -27,7 +27,7 @@ export class RateLimiterService {
     // Get rate limiting configuration from environment
     this.maxRequestsPerMinute = this.configService.get<number>(
       'MAX_REQUESTS_PER_MINUTE',
-      10,
+      15,
     );
 
     // Calculate minimum time between requests from rate limit

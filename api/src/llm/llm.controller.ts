@@ -15,7 +15,7 @@ export class LlmController {
       topP: 0.9,
       topK: 40,
       maxTokens: 200,
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.5-flash-lite',
     };
 
     const parameters = { ...defaultParams, ...body.parameters };

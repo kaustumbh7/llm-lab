@@ -64,7 +64,7 @@ export class ExperimentsService {
         maxTokensStep: maxTokensStep,
         model: this.configService.get<string>(
           'DEFAULT_MODEL',
-          'gemini-2.5-flash',
+          'gemini-2.5-flash-lite',
         ),
       },
     });

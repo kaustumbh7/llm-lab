@@ -45,7 +45,7 @@ describe('ExperimentsService', () => {
                   MAX_TOKENS_COMBINATIONS: 2,
                   MAX_CONCURRENT_REQUESTS: 3,
                   REQUEST_DELAY_MS: 2000,
-                  DEFAULT_MODEL: 'gemini-2.5-flash',
+                  DEFAULT_MODEL: 'gemini-2.5-flash-lite',
                 };
                 return config[key] ?? defaultValue;
               }),
