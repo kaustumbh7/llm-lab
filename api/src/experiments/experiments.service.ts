@@ -62,9 +62,10 @@ export class ExperimentsService {
         maxTokensMin: dto.maxTokensMin,
         maxTokensMax: dto.maxTokensMax,
         maxTokensStep: maxTokensStep,
-        model:
-          dto.model ||
-          this.configService.get<string>('DEFAULT_MODEL', 'gemini-2.5-flash'),
+        model: this.configService.get<string>(
+          'DEFAULT_MODEL',
+          'gemini-2.5-flash',
+        ),
       },
     });
 

@@ -23,31 +23,31 @@ model Experiment {
   // High (0.7-1.0): More creative, diverse responses
   temperatureMin  Float
   temperatureMax  Float
-  temperatureStep Float @default(0.1)
+  temperatureStep Float
 
   // Top-P: Controls diversity via nucleus sampling (0.0-1.0)
   // Low (0.1-0.3): More focused, conservative responses
   // High (0.7-0.9): More diverse, exploratory responses
   topPMin  Float
   topPMax  Float
-  topPStep Float @default(0.1)
+  topPStep Float
 
   // Top-K: Limits vocabulary diversity (1-100)
   // Low (10-20): More focused vocabulary
   // High (40-100): More diverse vocabulary
   topKMin  Int
   topKMax  Int
-  topKStep Int @default(5)
+  topKStep Int
 
   // Max Tokens: Controls response length (1-4000+)
   // Low (50-200): Short, concise responses
   // High (1000-4000): Long, detailed responses
   maxTokensMin  Int
   maxTokensMax  Int
-  maxTokensStep Int @default(100)
+  maxTokensStep Int
 
   // LLM configuration
-  model String @default("gemini-2.5-flash")
+  model String
 
   // Relationships
   responses Response[]

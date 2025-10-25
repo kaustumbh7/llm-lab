@@ -54,8 +54,4 @@ export class CreateExperimentDto {
   @Min(1)
   @Max(4000)
   maxTokensMax: number;
-
-  @IsOptional()
-  @IsString()
-  model?: string;
 }
