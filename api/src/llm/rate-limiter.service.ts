@@ -19,7 +19,7 @@ export class RateLimiterService {
   private readonly minTimeBetweenRequests: number;
 
   // Rate limiter state
-  private lastRequestTime: number = 0;
+  private requestTimes: number[] = [];
   private requestQueue: Array<() => void> = [];
   private isProcessing = false;
 
@@ -61,20 +61,26 @@ export class RateLimiterService {
 
     while (this.requestQueue.length > 0) {
       const now = Date.now();
-      const timeSinceLastRequest = now - this.lastRequestTime;
 
-      if (timeSinceLastRequest >= this.minTimeBetweenRequests) {
-        // Enough time has passed, allow the request
-        this.lastRequestTime = now;
+      // Clean up old request times (older than 1 minute)
+      this.requestTimes = this.requestTimes.filter(
+        (time) => now - time < 60000,
+      );
+
+      // Check if we can make another request
+      if (this.requestTimes.length < this.maxRequestsPerMinute) {
+        // We can make a request
+        this.requestTimes.push(now);
         const resolve = this.requestQueue.shift();
         if (resolve) {
           resolve();
         }
       } else {
-        // Need to wait more time
-        const waitTime = this.minTimeBetweenRequests - timeSinceLastRequest;
+        // We need to wait for the oldest request to expire
+        const oldestRequest = Math.min(...this.requestTimes);
+        const waitTime = 60000 - (now - oldestRequest) + 100; // Add 100ms buffer
         this.logger.debug(
-          `Rate limiting: waiting ${waitTime}ms before next request`,
+          `Rate limiting: waiting ${waitTime}ms before next request (${this.requestTimes.length}/${this.maxRequestsPerMinute} requests in last minute)`,
         );
         await this.delay(waitTime);
       }
@@ -96,14 +102,19 @@ export class RateLimiterService {
   getStatus(): {
     queueLength: number;
     maxRequestsPerMinute: number;
+    requestsInLastMinute: number;
     minTimeBetweenRequests: number;
-    timeSinceLastRequest: number;
   } {
+    const now = Date.now();
+    const recentRequests = this.requestTimes.filter(
+      (time) => now - time < 60000,
+    );
+
     return {
       queueLength: this.requestQueue.length,
       maxRequestsPerMinute: this.maxRequestsPerMinute,
+      requestsInLastMinute: recentRequests.length,
       minTimeBetweenRequests: this.minTimeBetweenRequests,
-      timeSinceLastRequest: Date.now() - this.lastRequestTime,
     };
   }
 
@@ -111,7 +122,7 @@ export class RateLimiterService {
    * Reset the rate limiter (useful for testing)
    */
   reset(): void {
-    this.lastRequestTime = 0;
+    this.requestTimes = [];
     this.requestQueue = [];
     this.isProcessing = false;
     this.logger.log('Rate limiter reset');
