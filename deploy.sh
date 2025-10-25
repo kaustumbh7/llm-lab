@@ -13,13 +13,16 @@ fi
 echo "🔐 Checking Railway authentication..."
 railway whoami || railway login
 
-# Deploy to Railway (from root directory)
+# Navigate to API directory
+cd api
+
+# Deploy to Railway
 echo "📦 Deploying to Railway..."
 railway up
 
 # Run database migrations
 echo "🗄️ Running database migrations..."
-railway run --service api pnpm db:push
+railway run pnpm db:push
 
 echo "✅ Deployment complete!"
 echo "🌐 Your API is now live at: $(railway domain)"

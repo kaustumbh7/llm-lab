@@ -37,15 +37,16 @@ railway login
 ### 1.3 Deploy Backend
 
 ```bash
-cd api
+# From the root directory (llm-lab/)
 
-# Initialize Railway project
+# Initialize Railway project (if first time)
 railway init
 
 # Deploy the application
+cd api
 railway up
 
-# Or use the deployment script
+# Or use the deployment script from root
 ./deploy.sh
 ```
 

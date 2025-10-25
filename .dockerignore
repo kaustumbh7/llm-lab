@@ -113,6 +113,3 @@ Dockerfile
 README.md
 DEPLOYMENT.md
 DEPLOYMENT_CHECKLIST.md
-
-# Prisma config (causes issues during build)
-prisma.config.ts
