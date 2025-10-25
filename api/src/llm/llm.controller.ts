@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 
 import { LLMParameters, LlmService } from './llm.service';
 
@@ -37,5 +37,13 @@ export class LlmController {
         error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
+  }
+
+  @Get('rate-limiter-status')
+  getRateLimiterStatus() {
+    return {
+      success: true,
+      status: this.llmService.getRateLimiterStatus(),
+    };
   }
 }
