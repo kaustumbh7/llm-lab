@@ -39,10 +39,10 @@ export class RateLimiterService {
   }
 
   /**
-   * Acquire permission to make a request
+   * Wait for rate limiting to allow the next request
    * Returns a promise that resolves when it's safe to make the request
    */
-  async acquireToken(): Promise<void> {
+  async waitForRateLimit(): Promise<void> {
     return new Promise((resolve) => {
       this.requestQueue.push(resolve);
       void this.processQueue();

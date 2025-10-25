@@ -20,13 +20,12 @@ describe('LlmService', () => {
         {
           provide: RateLimiterService,
           useValue: {
-            acquireToken: jest.fn().mockResolvedValue(undefined),
+            waitForRateLimit: jest.fn().mockResolvedValue(undefined),
             getStatus: jest.fn().mockReturnValue({
-              tokens: 2,
               queueLength: 0,
-              maxRequestsPerMinute: 15,
-              maxBurstRequests: 2,
-              minTimeBetweenRequests: 1000,
+              maxRequestsPerMinute: 10,
+              minTimeBetweenRequests: 6000,
+              timeSinceLastRequest: 0,
             }),
           },
         },

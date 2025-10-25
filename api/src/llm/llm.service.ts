@@ -42,10 +42,10 @@ export class LlmService {
     parameters: LLMParameters,
   ): Promise<LLMResponse> {
     try {
-      // Acquire rate limiter token before making request
-      this.logger.debug('Acquiring rate limiter token...');
-      await this.rateLimiter.acquireToken();
-      this.logger.debug('Rate limiter token acquired, making API request');
+      // Apply rate limiting before making request
+      this.logger.debug('Applying rate limiting...');
+      await this.rateLimiter.waitForRateLimit();
+      this.logger.debug('Rate limiting passed, making API request');
 
       const model = this.genAI.getGenerativeModel({
         model: parameters.model,
