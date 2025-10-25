@@ -27,7 +27,9 @@
     "db:format": "prisma format",
     "db:validate": "prisma validate",
     "db:reset": "prisma db push --force-reset",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "deploy:railway": "railway up",
+    "deploy:db": "railway run pnpm db:push"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
