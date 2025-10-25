@@ -11,6 +11,50 @@ interface ResponsePaginationProps {
   itemsPerPage?: number;
 }
 
+// Helper function to generate smart pagination numbers
+function generatePageNumbers(
+  currentPage: number,
+  totalPages: number,
+): (number | string)[] {
+  const delta = 2; // Number of pages to show on each side of current page
+  const range = [];
+  const rangeWithDots = [];
+
+  // Always show first page
+  range.push(1);
+
+  // Calculate range around current page
+  const start = Math.max(2, currentPage - delta);
+  const end = Math.min(totalPages - 1, currentPage + delta);
+
+  // Add pages around current page
+  for (let i = start; i <= end; i++) {
+    range.push(i);
+  }
+
+  // Always show last page
+  if (totalPages > 1) {
+    range.push(totalPages);
+  }
+
+  // Remove duplicates and sort
+  const uniqueRange = [...new Set(range)].sort((a, b) => a - b);
+
+  // Add ellipsis where needed
+  let prev = 0;
+  for (const page of uniqueRange) {
+    if (page - prev === 2) {
+      rangeWithDots.push(prev + 1);
+    } else if (page - prev > 2) {
+      rangeWithDots.push('...');
+    }
+    rangeWithDots.push(page);
+    prev = page;
+  }
+
+  return rangeWithDots;
+}
+
 export function ResponsePagination({
   responses,
   itemsPerPage = 5,
@@ -119,14 +163,17 @@ export function ResponsePagination({
             </Button>
 
             <div className="flex items-center gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
+              {generatePageNumbers(currentPage, totalPages).map(
+                (page, index) => (
                   <Button
-                    key={page}
+                    key={index}
                     variant={currentPage === page ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => goToPage(page)}
-                    className="h-8 w-8 p-0"
+                    onClick={() =>
+                      typeof page === 'number' ? goToPage(page) : null
+                    }
+                    disabled={typeof page !== 'number'}
+                    className={`h-8 w-8 p-0 ${typeof page === 'string' ? 'cursor-default' : ''}`}
                   >
                     {page}
                   </Button>
