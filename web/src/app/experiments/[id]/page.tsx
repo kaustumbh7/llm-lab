@@ -15,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getExperiment } from '@/lib/api';
 import type { ExperimentWithResponses } from '@/lib/types';
 
@@ -160,75 +161,86 @@ export default async function ExperimentDetailPage({
           </CardContent>
         </Card>
 
-        {/* Responses Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Generated Responses</CardTitle>
-            <CardDescription>
-              All generated responses with their parameters and quality metrics.
-              Use the pagination below to navigate through all responses.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {experiment.responses && experiment.responses.length > 0 ? (
-              <ResponsePagination responses={experiment.responses} />
-            ) : (
-              <p className="text-muted-foreground py-8 text-center">
+        {/* Separator */}
+        <div className="border-border my-8 border-t"></div>
+
+        {/* Tabs Section */}
+        {experiment.responses && experiment.responses.length > 0 ? (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold">Experiment Results</h2>
+              <p className="text-muted-foreground">
+                Analyze your experiment results with interactive visualizations
+                and comparisons.
+              </p>
+            </div>
+
+            <Tabs defaultValue="responses" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="responses">Responses</TabsTrigger>
+                <TabsTrigger value="metrics">Performance</TabsTrigger>
+                <TabsTrigger value="analysis">Analysis</TabsTrigger>
+                <TabsTrigger value="comparison">Comparison</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="responses" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Generated Responses</CardTitle>
+                    <CardDescription>
+                      All generated responses with their parameters and quality
+                      metrics. Use the pagination below to navigate through all
+                      responses.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsePagination responses={experiment.responses} />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="metrics" className="mt-6">
+                <MetricsVisualization responses={experiment.responses} />
+              </TabsContent>
+
+              <TabsContent value="analysis" className="mt-6">
+                <ParameterAnalysis responses={experiment.responses} />
+              </TabsContent>
+
+              <TabsContent value="comparison" className="mt-6">
+                {experiment.responses.length > 1 ? (
+                  <ResponseComparison responses={experiment.responses} />
+                ) : (
+                  <Card>
+                    <CardContent className="pt-6">
+                      <p className="text-muted-foreground text-center">
+                        Comparison requires at least 2 responses. This
+                        experiment has only {experiment.responses.length}{' '}
+                        response.
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+            </Tabs>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold">Experiment Results</h2>
+              <p className="text-muted-foreground">
                 No responses found for this experiment.
               </p>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Analysis & Visualization Section */}
-        {experiment.responses && experiment.responses.length > 0 && (
-          <>
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold">Analysis & Visualization</h2>
-              <p className="text-muted-foreground">
-                Comprehensive analysis of your experiment results with
-                interactive charts and metrics.
-              </p>
             </div>
-
-            {/* Metrics Visualization */}
-            <div className="mb-8">
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold">Performance Metrics</h3>
-                <p className="text-muted-foreground">
-                  Visualize how different parameter combinations affect response
-                  quality across all metrics.
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-muted-foreground text-center">
+                  This experiment has not been run yet or no responses were
+                  generated.
                 </p>
-              </div>
-              <MetricsVisualization responses={experiment.responses} />
-            </div>
-
-            {/* Parameter Analysis */}
-            <div className="mb-8">
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold">Parameter Analysis</h3>
-                <p className="text-muted-foreground">
-                  Analyze parameter distributions, correlations, and identify
-                  the best performing combinations.
-                </p>
-              </div>
-              <ParameterAnalysis responses={experiment.responses} />
-            </div>
-
-            {/* Response Comparison */}
-            {experiment.responses.length > 1 && (
-              <div className="mb-8">
-                <div className="mb-4">
-                  <h3 className="text-xl font-semibold">Response Comparison</h3>
-                  <p className="text-muted-foreground">
-                    Compare different responses side-by-side to understand the
-                    impact of parameter changes.
-                  </p>
-                </div>
-                <ResponseComparison responses={experiment.responses} />
-              </div>
-            )}
-          </>
+              </CardContent>
+            </Card>
+          </div>
         )}
       </div>
     </div>
