@@ -2,6 +2,9 @@
 
 A full-stack web application for experimenting with LLM parameters and analyzing response quality. This project allows users to input prompts, specify parameter ranges, generate multiple LLM responses, and analyze them with custom quality metrics.
 
+🌐 **Live Demo**: [https://llm-lab-blue.vercel.app/](https://llm-lab-blue.vercel.app/)  
+📹 **Demo Video**: [Watch Demo](https://drive.google.com/file/d/1sdo-pJAt1qLfgfPDIlYIieIUol8lW7hK/view?usp=sharing)
+
 ## 🚀 Features
 
 - **Parameter Experimentation**: Test different combinations of temperature, top-p, top-k, and max-tokens

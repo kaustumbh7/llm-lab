@@ -4,6 +4,8 @@
 
 This document provides comprehensive guidance on deploying LLM Lab in different environments, from local development to production. It covers deployment choices, environment configuration, and best practices for different hosting platforms.
 
+🌐 **Live Demo**: [https://llm-lab-blue.vercel.app/](https://llm-lab-blue.vercel.app/)
+
 ## Deployment Architecture
 
 ### Production Deployment Stack
