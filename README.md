@@ -29,6 +29,7 @@ This project includes comprehensive documentation to help you understand, deploy
 - **[QUALITY_METRICS.md](./QUALITY_METRICS.md)** - Detailed explanation of quality metrics with formulas and examples
 - **[UI_UX_DESIGN.md](./UI_UX_DESIGN.md)** - Design system, user journey, and accessibility guidelines
 - **[ASSUMPTIONS_AND_DESIGN_DECISIONS.md](./ASSUMPTIONS_AND_DESIGN_DECISIONS.md)** - Core assumptions, trade-offs, and rationale behind key decisions
+- **[PROJECT_PLAN.csv](./PROJECT_PLAN.csv)** - Development timeline with task breakdown and time estimates
 
 ## 📋 Prerequisites
 

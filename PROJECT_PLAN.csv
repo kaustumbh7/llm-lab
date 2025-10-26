@@ -1,0 +1,29 @@
+Story,Task,Estimate Time min (hr),Estimate Time max (hr),Actual Time (hr),Comment
+Project Setup,Initialize project structure,0.125,0.25,0.2,Setup monorepo with api and web directories
+Project Setup,Setup development environment,0.25,0.5,0.35,Install Node.js pnpm and configure workspace
+Backend Documentation,Architecture Design + Documentation,0.5,1,0.75,
+Backend Development,Setup NestJS project,0.5,1,0.75,Install NestJS CLI and create project structure
+Backend Development,Implement LLM service,1,2,1.5,Create service with Google Gemini API integration
+Backend Development,Create experiments module,0.75,1.5,1.1,Implement CRUD operations and parameter generation
+Backend Development,Implement quality metrics,1,2,1.75,Create 5 custom metrics with algorithms
+Backend Development,Setup database with Prisma,0.5,1,0.75,Configure Prisma with PostgreSQL schema
+Backend Development,Add rate limiting,0.25,0.5,0.4,Implement concurrent request control
+Frontend Development,Setup Next.js project,0.25,0.5,0.35,Install Next.js 16 with App Router
+Frontend Documentation,Create UI/UX design doc,0.25,0.5,0.5,
+Frontend Development,Create experiment form,1,2,1.5,Build form with parameter inputs and validation
+Frontend Development,Build results visualization,1,2,1.75,Create charts and metrics display with Recharts
+Frontend Development,Implement parameter analysis,0.75,1.5,1.1,Build correlation charts and analysis views
+Frontend Development,Add response comparison,0.5,1,0.75,Create side-by-side comparison interface
+Database Design,Design database schema,0.5,1,0.75,Define Experiment Response and ResponseMetrics models
+Database Design,Implement Prisma models,0.5,1,0.75,Create Prisma schema and generate client
+Quality Metrics,Design metric algorithms,0.5,1,0.75,Plan coherence completeness length structure vocabulary
+Quality Metrics,Implement all metrics,1,2,1.75,Code all 5 metrics with text analysis utilities
+Testing,Test the implementation + bug fixes,1,2.5,2,Test complete user workflows
+Deployment,Setup Railway deployment,0.5,1,0.75,Configure Railway for backend and database
+Deployment,Setup Vercel deployment,0.25,0.5,0.35,Configure Vercel for frontend hosting
+Deployment,Configure environment variables,0.25,0.5,0.35,Set up all required environment variables
+Deployment,Configure CI/CD pipeline,0.5,1,0.75,"Automatically taken care of by Railway, Vercel"
+Documentation,"Write README, Quick Start guide, Quality Metrics guide",1,2,1,Create comprehensive project overview
+Documentation,Create API documentation,0.5,1,0.75,Document all endpoints and data structures
+Documentation,Write deployment guide,0.5,1,0.75,Document deployment process and configuration
+,,15.625,31.75,24.2,
