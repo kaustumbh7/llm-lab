@@ -171,8 +171,10 @@ export class ExperimentsService {
     experiment: Experiment,
   ): LLMParameters[] {
     const combinations: LLMParameters[] = [];
+    const maxCombinations = 10;
 
-    // Generate combinations using for loops from min to max with steps
+    // Generate all possible combinations first
+    const allCombinations: LLMParameters[] = [];
     for (
       let temperature = experiment.temperatureMin;
       temperature <= experiment.temperatureMax;
@@ -193,7 +195,7 @@ export class ExperimentsService {
             maxTokens <= experiment.maxTokensMax;
             maxTokens += experiment.maxTokensStep
           ) {
-            combinations.push({
+            allCombinations.push({
               temperature: Math.round(temperature * 100) / 100,
               topP: Math.round(topP * 100) / 100,
               topK: Math.round(topK),
@@ -203,6 +205,18 @@ export class ExperimentsService {
           }
         }
       }
+    }
+
+    // Sample up to 10 combinations evenly distributed across the parameter space
+    if (allCombinations.length <= maxCombinations) {
+      return allCombinations;
+    }
+
+    // Select combinations with even spacing
+    const step = Math.floor(allCombinations.length / maxCombinations);
+    for (let i = 0; i < maxCombinations; i++) {
+      const index = Math.min(i * step, allCombinations.length - 1);
+      combinations.push(allCombinations[index]);
     }
 
     return combinations;

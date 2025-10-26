@@ -138,7 +138,7 @@ export default function CreateExperimentPage() {
     timeoutRef.current = setTimeout(() => {
       console.log('Timeout reached - showing rate limit message');
       setShowRateLimitMessage(true);
-    }, 2000);
+    }, 10000);
 
     try {
       const experiment = await createExperiment(data);
@@ -305,9 +305,10 @@ export default function CreateExperimentPage() {
                                 min="0"
                                 max="2"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseFloat(e.target.value))
-                                }
+                                onChange={(e) => {
+                                  const value = parseFloat(e.target.value);
+                                  field.onChange(isNaN(value) ? 0 : value);
+                                }}
                               />
                             </FormControl>
                             <FormMessage />
@@ -327,9 +328,10 @@ export default function CreateExperimentPage() {
                                 min="0"
                                 max="2"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseFloat(e.target.value))
-                                }
+                                onChange={(e) => {
+                                  const value = parseFloat(e.target.value);
+                                  field.onChange(isNaN(value) ? 0 : value);
+                                }}
                               />
                             </FormControl>
                             <FormMessage />
@@ -373,9 +375,10 @@ export default function CreateExperimentPage() {
                                 min="0"
                                 max="1"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseFloat(e.target.value))
-                                }
+                                onChange={(e) => {
+                                  const value = parseFloat(e.target.value);
+                                  field.onChange(isNaN(value) ? 0 : value);
+                                }}
                               />
                             </FormControl>
                             <FormMessage />
@@ -395,9 +398,10 @@ export default function CreateExperimentPage() {
                                 min="0"
                                 max="1"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseFloat(e.target.value))
-                                }
+                                onChange={(e) => {
+                                  const value = parseFloat(e.target.value);
+                                  field.onChange(isNaN(value) ? 0 : value);
+                                }}
                               />
                             </FormControl>
                             <FormMessage />
@@ -442,9 +446,10 @@ export default function CreateExperimentPage() {
                                 min="1"
                                 max="100"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseInt(e.target.value))
-                                }
+                                onChange={(e) => {
+                                  const value = parseInt(e.target.value);
+                                  field.onChange(isNaN(value) ? 0 : value);
+                                }}
                               />
                             </FormControl>
                             <FormMessage />
@@ -464,9 +469,10 @@ export default function CreateExperimentPage() {
                                 min="1"
                                 max="100"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseInt(e.target.value))
-                                }
+                                onChange={(e) => {
+                                  const value = parseInt(e.target.value);
+                                  field.onChange(isNaN(value) ? 0 : value);
+                                }}
                               />
                             </FormControl>
                             <FormMessage />
@@ -511,9 +517,10 @@ export default function CreateExperimentPage() {
                                 min="1"
                                 max="1000"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseInt(e.target.value))
-                                }
+                                onChange={(e) => {
+                                  const value = parseInt(e.target.value);
+                                  field.onChange(isNaN(value) ? 0 : value);
+                                }}
                               />
                             </FormControl>
                             <FormMessage />
@@ -533,9 +540,10 @@ export default function CreateExperimentPage() {
                                 min="1"
                                 max="1000"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseInt(e.target.value))
-                                }
+                                onChange={(e) => {
+                                  const value = parseInt(e.target.value);
+                                  field.onChange(isNaN(value) ? 0 : value);
+                                }}
                               />
                             </FormControl>
                             <FormMessage />
