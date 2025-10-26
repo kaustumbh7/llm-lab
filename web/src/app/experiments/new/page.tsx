@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -100,6 +100,8 @@ export default function CreateExperimentPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showRateLimitMessage, setShowRateLimitMessage] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const form = useForm<CreateExperimentFormData>({
     resolver: zodResolver(createExperimentSchema),
@@ -118,19 +120,46 @@ export default function CreateExperimentPage() {
     },
   });
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   const onSubmit = async (data: CreateExperimentFormData) => {
     setIsSubmitting(true);
     setError(null);
+    setShowRateLimitMessage(false);
+
+    // Set a timeout to show rate limit message after 2 seconds
+    timeoutRef.current = setTimeout(() => {
+      console.log('Timeout reached - showing rate limit message');
+      setShowRateLimitMessage(true);
+    }, 2000);
 
     try {
       const experiment = await createExperiment(data);
+      if (timeoutRef.current) {
+        console.log('Clearing timeout - experiment completed successfully');
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
       router.push(`/experiments/${experiment.id}`);
     } catch (err) {
+      if (timeoutRef.current) {
+        console.log('Clearing timeout - experiment failed');
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
       setError(
         err instanceof Error ? err.message : 'Failed to create experiment',
       );
     } finally {
       setIsSubmitting(false);
+      setShowRateLimitMessage(false);
     }
   };
 
@@ -532,6 +561,40 @@ export default function CreateExperimentPage() {
                 )}
               </Button>
             </div>
+
+            {/* Rate Limit Message */}
+            {showRateLimitMessage && (
+              <div className="rounded-md border border-yellow-200 bg-yellow-50 p-4">
+                <div className="flex items-start">
+                  <div className="shrink-0">
+                    <svg
+                      className="h-5 w-5 text-yellow-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-yellow-800">
+                      Google Gemini API Rate Limit Reached
+                    </h3>
+                    <div className="mt-2 text-sm text-yellow-700">
+                      <p>
+                        The experiment is taking longer than expected due to API
+                        rate limits. Please be patient while the responses are
+                        being computed. This may take a few more seconds
+                        depending on the number of parameter combinations.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {error && (
               <div className="bg-destructive/15 rounded-md p-4">
