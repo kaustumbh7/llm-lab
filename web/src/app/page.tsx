@@ -12,13 +12,20 @@ import {
 import { getExperiments } from '@/lib/api';
 import type { Experiment } from '@/lib/types';
 
+// Disable caching for this page
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function HomePage() {
   let experiments: Experiment[] = [];
   let error: string | null = null;
 
   try {
+    console.log('Fetching experiments from:', process.env.NEXT_PUBLIC_API_URL);
     experiments = await getExperiments();
+    console.log('Fetched experiments:', experiments.length);
   } catch (err) {
+    console.error('Error fetching experiments:', err);
     error = err instanceof Error ? err.message : 'Failed to load experiments';
   }
 

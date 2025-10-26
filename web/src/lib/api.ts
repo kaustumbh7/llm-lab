@@ -4,10 +4,16 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 // Minimal API client - only what we need right now
 export async function getExperiments(): Promise<Experiment[]> {
-  const response = await fetch(`${API_BASE_URL}/experiments`);
+  const response = await fetch(`${API_BASE_URL}/experiments`, {
+    cache: 'no-store', // Disable caching for SSR
+  });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch experiments');
+    const errorText = await response.text();
+    console.error('Failed to fetch experiments:', response.status, errorText);
+    throw new Error(
+      `Failed to fetch experiments: ${response.status} ${errorText}`,
+    );
   }
 
   const data = await response.json();
