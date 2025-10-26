@@ -440,25 +440,11 @@ sequenceDiagram
 
 ## Deployment Architecture
 
-### Development Environment
+For detailed deployment information, see [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md).
 
-- **Local Development**: Docker Compose for local setup
-- **Hot Reloading**: Development servers with hot reload
-- **Database**: SQLite for development simplicity
-
-### Production Environment
-
-- **Containerization**: Docker containers for deployment
-- **Database**: PostgreSQL for production reliability
-- **Environment**: Railway deployment with environment variables
-- **Monitoring**: Application logging and error tracking
-
-### CI/CD Pipeline
-
-- **Build Process**: Automated builds with pnpm
-- **Testing**: Jest for unit and integration tests
-- **Deployment**: Automated deployment to Railway
-- **Database Migrations**: Automated schema updates
+- **Frontend**: Vercel with global CDN and automatic deployments
+- **Backend**: Railway with PostgreSQL and Docker containers
+- **CI/CD**: GitHub Actions for automated testing and deployment
 
 ## Monitoring and Observability
 

@@ -317,31 +317,20 @@ llm-lab/
   CMD ["pnpm", "start:prod"]
   ```
 
-### Deployment Platform
+### Deployment Platforms
 
-- **Railway**
+- **Vercel** (Frontend)
 
-  - **Purpose**: Cloud deployment platform
-  - **Features**: Automatic deployments, environment variables, databases
-  - **Benefits**: Simplicity, scalability, integration
+  - **Purpose**: Next.js optimized hosting with global CDN
+  - **Features**: Automatic deployments, preview deployments, edge caching
+  - **Benefits**: Optimal Next.js performance, global reach
 
-- **Railway Configuration**
-  - **railway.json**: Deployment configuration
-  - **Environment Variables**: Secure configuration management
-  - **Database**: PostgreSQL service integration
+- **Railway** (Backend)
+  - **Purpose**: Backend and database hosting
+  - **Features**: Automatic deployments, PostgreSQL integration
+  - **Benefits**: Simplicity, scalability, cost-effective
 
-### Environment Configuration
-
-- **Development**
-
-  - **Database**: SQLite (local file)
-  - **API URL**: `http://localhost:5000`
-  - **Frontend URL**: `http://localhost:3000`
-
-- **Production**
-  - **Database**: PostgreSQL (Railway service)
-  - **API URL**: Railway deployment URL
-  - **Frontend URL**: Railway deployment URL
+For detailed deployment configuration, see [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md).
 
 ## Security Stack
 
@@ -427,29 +416,6 @@ llm-lab/
 - **Database Performance**: Query performance tracking
 - **Memory Usage**: Application memory monitoring
 - **Error Rates**: Error frequency tracking
-
-## Testing Stack
-
-### Frontend Testing
-
-- **Jest**: Testing framework
-- **React Testing Library**: Component testing
-- **Next.js Testing**: Integration testing
-- **TypeScript**: Type testing
-
-### Backend Testing
-
-- **Jest**: Testing framework
-- **Supertest**: HTTP assertion library
-- **NestJS Testing**: Framework testing utilities
-- **Prisma Testing**: Database testing
-
-### Test Configuration
-
-- **Unit Tests**: Individual component/function testing
-- **Integration Tests**: API endpoint testing
-- **E2E Tests**: End-to-end testing
-- **Coverage**: Code coverage reporting
 
 ## Version Compatibility
 

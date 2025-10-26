@@ -8,15 +8,27 @@ A full-stack web application for experimenting with LLM parameters and analyzing
 - **Custom Quality Metrics**: 5 programmatically calculated quality metrics (Coherence, Completeness, Length, Structure, Vocabulary)
 - **Response Analysis**: Compare responses with detailed metrics and export functionality
 - **Modern UI**: Built with Next.js and Tailwind CSS
-- **Robust Backend**: NestJS API with Prisma ORM and SQLite database
+- **Robust Backend**: NestJS API with Prisma ORM and PostgreSQL
 
 ## 🏗️ Architecture
 
-- **Frontend**: Next.js 15 with TypeScript and Tailwind CSS
-- **Backend**: NestJS with TypeScript
-- **Database**: SQLite with Prisma ORM
+- **Frontend**: Next.js 16 with TypeScript and Tailwind CSS (deployed on Vercel)
+- **Backend**: NestJS with TypeScript (deployed on Railway)
+- **Database**: PostgreSQL with Prisma ORM (Railway)
 - **LLM Integration**: Google Gemini API
 - **Quality Metrics**: Custom algorithms for response evaluation
+
+## 📚 Documentation
+
+This project includes comprehensive documentation to help you understand, deploy, and extend the system:
+
+- **[QUICK_START.md](./QUICK_START.md)** - Get started in 5 minutes with step-by-step setup instructions
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture, design decisions, and component structure
+- **[TECH_STACK.md](./TECH_STACK.md)** - Complete technology stack with versions and configurations
+- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Deployment strategies for Vercel (frontend) and Railway (backend)
+- **[QUALITY_METRICS.md](./QUALITY_METRICS.md)** - Detailed explanation of quality metrics with formulas and examples
+- **[UI_UX_DESIGN.md](./UI_UX_DESIGN.md)** - Design system, user journey, and accessibility guidelines
+- **[ASSUMPTIONS_AND_DESIGN_DECISIONS.md](./ASSUMPTIONS_AND_DESIGN_DECISIONS.md)** - Core assumptions, trade-offs, and rationale behind key decisions
 
 ## 📋 Prerequisites
 
@@ -24,94 +36,35 @@ A full-stack web application for experimenting with LLM parameters and analyzing
 - pnpm (recommended) or npm
 - Google AI Studio API key
 
-## 🛠️ Setup Instructions
+## 🛠️ Quick Setup
 
-### 1. Clone and Install Dependencies
+For detailed setup instructions, see [QUICK_START.md](./QUICK_START.md).
 
 ```bash
-# Install dependencies for both frontend and backend
+# 1. Clone and install dependencies
+git clone <repository-url>
+cd llm-lab
 pnpm install
 
-# Or install separately
-cd api && pnpm install
-cd ../web && pnpm install
-```
-
-### 2. Backend Setup (API)
-
-```bash
+# 2. Setup backend
 cd api
-
-# Copy environment variables
 cp .env.example .env
-
-# Edit .env file with your configuration
-# Required: GOOGLE_AI_API_KEY (get from https://aistudio.google.com/app/apikey)
-
-# Generate Prisma client
-pnpm db:generate
-
-# Run database migrations
-pnpm db:push
-
-# View and modify database via UI
-pnpm db:studio
-
-# Start the development server
+# Edit .env with your GOOGLE_AI_API_KEY
+pnpm db:generate && pnpm db:push
 pnpm start:dev
-```
 
-The API will be available at `http://localhost:5000`
-
-### 3. Frontend Setup (Web)
-
-```bash
+# 3. Setup frontend (in new terminal)
 cd web
-
-# Start the development server
+echo "NEXT_PUBLIC_API_URL=http://localhost:5000" > .env.local
 pnpm dev
 ```
 
-The frontend will be available at `http://localhost:3000`
+- **Frontend**: `http://localhost:3000`
+- **Backend API**: `http://localhost:5000`
 
-## 🎯 Backend API Achievements
+## 🎯 Key Features
 
-### ✅ Core Infrastructure
-
-- **NestJS Framework**: Modular, scalable backend architecture
-- **Prisma ORM**: Type-safe database operations with SQLite
-- **Environment Configuration**: Centralized config management
-- **CORS & Validation**: Secure API with input validation
-
-### ✅ Database Schema
-
-- **Experiments**: Store experiment configurations with parameter ranges
-- **Responses**: Track LLM responses with parameter values
-- **Metrics**: Store calculated quality metrics for each response
-- **Relationships**: Proper foreign key relationships with cascade deletes
-
-### ✅ LLM Integration
-
-- **Google Gemini API**: Production-ready LLM integration
-- **Parameter Support**: Temperature, Top-P, Top-K, Max Tokens
-- **Error Handling**: Robust error handling for API failures
-- **Rate Limiting**: Configurable concurrent request limits
-
-### ✅ Experiment Management
-
-- **Dynamic Parameter Generation**: Automatic combination generation based on ranges
-- **Batch Processing**: Efficient handling of multiple parameter combinations
-- **Metrics Integration**: Automatic quality metrics calculation
-- **Export Functionality**: JSON export with complete experiment data
-
-### ✅ Quality Metrics System
-
-- **5 Custom Metrics**: Coherence, Completeness, Length, Structure, Vocabulary
-- **Modular Architecture**: Separate utility classes for each metric
-- **Weighted Scoring**: Configurable weights for overall score calculation
-- **Text Analysis**: Advanced text processing for metric calculation
-
-### ✅ API Endpoints
+### API Endpoints
 
 | Method | Endpoint                  | Description                   |
 | ------ | ------------------------- | ----------------------------- |
@@ -121,153 +74,51 @@ The frontend will be available at `http://localhost:3000`
 | `GET`  | `/experiments/:id`        | Get experiment details        |
 | `GET`  | `/experiments/:id/export` | Export experiment data (JSON) |
 
-## 🧪 Testing the API
+### Quality Metrics
 
-### 1. Start the Backend
+- **Coherence** (0-1): Logical flow and consistency
+- **Completeness** (0-1): How well response addresses the prompt
+- **Length** (0-1): Appropriate response length
+- **Structure** (0-1): Paragraph organization
+- **Vocabulary** (0-1): Vocabulary diversity and sophistication
 
-```bash
-cd api
-pnpm start:dev
-```
-
-### 2. Test with cURL
-
-#### Test LLM API connection
-
-```bash
-curl -X POST http://localhost:5000/test-llm \
-  -H "Content-Type: application/json" \
-  -d '{
-    "prompt": "Hello, how are you?",
-    "parameters": {
-      "temperature": 0.5,
-      "topP": 0.8,
-      "topK": 20,
-      "maxTokens": 50
-    }
-  }'
-```
-
-#### Create an Experiment
-
-```bash
-curl -X POST http://localhost:5000/experiments \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Test Experiment",
-    "description": "Testing LLM parameters",
-    "prompt": "Write a short story about a robot learning to paint.",
-    "temperatureMin": 0.1,
-    "temperatureMax": 0.9,
-    "topPMin": 0.1,
-    "topPMax": 0.9,
-    "topKMin": 10,
-    "topKMax": 50,
-    "maxTokensMin": 100,
-    "maxTokensMax": 500
-  }'
-```
-
-#### List Experiments
-
-```bash
-curl http://localhost:5000/experiments
-```
-
-#### Get Experiment Details
-
-```bash
-curl http://localhost:5000/experiments/{experiment-id}
-```
-
-#### Export Experiment Data
-
-```bash
-curl http://localhost:5000/experiments/{experiment-id}/export \
-  -H "Accept: application/json" \
-  -o experiment-export.json
-```
-
-## 📊 Quality Metrics Explained
-
-### 1. **Coherence Score (0-1)**
-
-- Measures logical flow and consistency
-- Analyzes connector words, pronoun consistency, topic consistency
-- Higher scores indicate better logical structure
-
-### 2. **Completeness Score (0-1)**
-
-- Evaluates how well the response addresses the prompt
-- Checks keyword coverage, question answering, task fulfillment
-- Higher scores indicate more complete responses
-
-### 3. **Length Score (0-1)**
-
-- Assesses appropriate response length relative to prompt
-- Optimal range: 2-5x the prompt length
-- Penalizes responses that are too short or too long
-
-### 4. **Structure Score (0-1)**
-
-- Evaluates paragraph structure and organization
-- Checks for introduction/conclusion, logical progression
-- Higher scores indicate better structural organization
-
-### 5. **Vocabulary Score (0-1)**
-
-- Measures vocabulary diversity and sophistication
-- Analyzes word variety, sophisticated word usage, repetition
-- Higher scores indicate richer vocabulary
+For detailed metric explanations with formulas and examples, see [QUALITY_METRICS.md](./QUALITY_METRICS.md).
 
 ## 📁 Project Structure
 
 ```
 llm-lab/
-├── api/                    # NestJS Backend
+├── api/                    # NestJS Backend (Railway)
 │   ├── src/
 │   │   ├── experiments/    # Experiment management
 │   │   ├── llm/           # LLM integration
 │   │   ├── metrics/       # Quality metrics
 │   │   └── prisma/        # Database service
-│   ├── prisma/            # Database schema
-│   └── .env.example       # Environment template
-├── web/                   # Next.js Frontend
+│   └── prisma/            # Database schema
+├── web/                   # Next.js Frontend (Vercel)
 │   ├── src/
-│   │   └── app/           # App router pages
+│   │   ├── app/           # App router pages
+│   │   └── components/    # UI components
 │   └── public/            # Static assets
-└── README.md              # This file
+└── *.md                   # Documentation files
 ```
 
-## 🔍 Troubleshooting
+## 🌐 Deployment
 
-### Common Issues
+- **Frontend**: Deployed on Vercel with global CDN
+- **Backend**: Deployed on Railway with PostgreSQL
+- **Database**: PostgreSQL on Railway
 
-1. **Database Connection Error**
+For detailed deployment instructions, see [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md).
 
-   ```bash
-   cd api
-   pnpm db:generate
-   pnpm db:push
-   ```
+## 🤝 Contributing
 
-2. **Google AI API Key Error**
+For information about the architecture, design decisions, and development guidelines, please refer to:
 
-   - Ensure `GOOGLE_AI_API_KEY` is set in `.env`
-   - Get API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - System architecture and design
+- [TECH_STACK.md](./TECH_STACK.md) - Technology stack details
+- [ASSUMPTIONS_AND_DESIGN_DECISIONS.md](./ASSUMPTIONS_AND_DESIGN_DECISIONS.md) - Design rationale
 
-3. **CORS Issues**
+## 📄 License
 
-   - Check `FRONTEND_URL` in `.env` matches your frontend URL
-   - Default: `http://localhost:3000`
-
-4. **Port Already in Use**
-   - Change `PORT` in `.env` file
-   - Or kill process: `lsof -ti:5000 | xargs kill -9`
-
-## 📈 Performance Notes
-
-- **Rate Limiting**: Configured to prevent API quota exhaustion
-- **Concurrent Requests**: Limited to 3 simultaneous requests
-- **Request Delays**: 2-second delay between requests
-- **Database Optimization**: Efficient queries with proper indexing
+This project is licensed under the terms specified in the repository.
